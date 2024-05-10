@@ -24,7 +24,6 @@ const PricingTable = () => {
   return (
     <div className="work-section-wrapper" id="Pricing-Table">
       <div className="work-section-top">
-       
         <h1 className="primary-heading">Our Pricing Plans</h1>
         <Container sx={{ mt: "20px" }}>
           <Box
@@ -36,7 +35,7 @@ const PricingTable = () => {
             }}
           >
             {Features.map((feature, index) => (
-              <Card 
+              <Card
                 key={index}
                 sx={{
                   height: "10cm",
@@ -44,26 +43,36 @@ const PricingTable = () => {
                   borderRadius: "20px",
                   p: "40px",
                   mb: "100px",
-                  position:'relative',
-                  display:'flex',
-                  flexDirection:'column',
-                  alignItems:'center',
-                  boxShadow:"1px 5px 10px rgba(0,0,0,0.5)"
-
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  boxShadow: "1px 5px 10px rgba(0,0,0,0.5)",
                 }}
               >
-                <Typography variant="h6" color="primary" sx={{ fontSize: "bold", ml: "20px" ,}} gutterBottom>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  sx={{ fontSize: "bold", ml: "20px" }}
+                  gutterBottom
+                >
                   {feature.titre}
                 </Typography>
                 <Typography
                   variant="h4"
-                  sx={{ color: "black", fontWeight:'bold' , fontSize:40 }}
+                  sx={{ color: "black", fontWeight: "bold", fontSize: 40 }}
                 >
                   {feature.price}
                 </Typography>
 
                 <ul
-                  style={{ display: "flex", flexDirection: "column", gap: 10 , position:'absolute', top:'160px'}}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    position: "absolute",
+                    top: "160px",
+                  }}
                 >
                   {feature.Feature.map((element, index) => (
                     <li
@@ -76,7 +85,16 @@ const PricingTable = () => {
                   ))}
                 </ul>
 
-                <Button variant="contained" color="primary" sx={{position:'absolute', top:'300px' , width:'70%',borderRadius:'40px'}} >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    position: "absolute",
+                    top: "300px",
+                    width: "70%",
+                    borderRadius: "40px",
+                  }}
+                >
                   Select Plan
                 </Button>
               </Card>

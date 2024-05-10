@@ -1,20 +1,23 @@
 import * as React from "react";
-import  { useState } from 'react';
-import validator from 'validator';
+import { useState } from "react";
+import validator from "validator";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import {Link as LinkMui}  from "@mui/material/" ;
+import { Link as LinkMui } from "@mui/material/";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { Navigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useNavigate , Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 function Copyright(props) {
   return (
@@ -25,8 +28,11 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://github.com/elkadirizouhra?tab=repositories">
-       Mygithub
+      <Link
+        color="inherit"
+        href="https://github.com/elkadirizouhra?tab=repositories"
+      >
+        Mygithub
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -37,31 +43,50 @@ function Copyright(props) {
 // TODO remove, this demo shouldn't need to reset the theme.
 
 export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidPassword, setIsValidPassword] = useState(true);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        navigate("/SignIn");
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        // ..
+      });
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    if (name === 'email') {
+    if (name === "email") {
       setEmail(value);
       setIsValidEmail(validator.isEmail(value));
-    } else if (name === 'password') {
+    } else if (name === "password") {
       setPassword(value);
-      setIsValidPassword(validator.isStrongPassword(value)); 
+      setIsValidPassword(validator.isStrongPassword(value));
     }
   };
 
-  const navigate = useNavigate();
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   console.log({
+  //     email: data.get("email"),
+  //     password: data.get("password"),
+  //   });
+  // };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -80,7 +105,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -114,7 +139,7 @@ export default function SignUp() {
                 value={email}
                 onChange={handleChange}
                 error={!isValidEmail}
-                helperText={!isValidEmail ? "svp enterer un email valide " :'' }
+                helperText={!isValidEmail ? "svp enterer un email valide " : ""}
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,7 +153,9 @@ export default function SignUp() {
                 value={password}
                 onChange={handleChange}
                 error={!isValidPassword}
-                helperText={!isValidPassword ? "svp entrer un fort mot de passe":''}
+                helperText={
+                  !isValidPassword ? "svp entrer un fort mot de passe" : ""
+                }
                 autoComplete="new-password"
               />
             </Grid>
@@ -140,7 +167,7 @@ export default function SignUp() {
             </Grid>
           </Grid>
           <Button
-            type="submit"
+            onClick={onSubmit}
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
@@ -149,7 +176,7 @@ export default function SignUp() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <LinkMui component={Link } to='/SignIn' variant="body2">
+              <LinkMui component={Link} to="/SignIn" variant="body2">
                 Already have an account? Sign in
               </LinkMui>
             </Grid>
