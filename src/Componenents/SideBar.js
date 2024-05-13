@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import WbCloudyOutlinedIcon from "@mui/icons-material/WbCloudyOutlined";
@@ -15,10 +16,24 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import DropDrag from "./DropDrag";
+import ProgessBar from "./ProgressBar";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 
-export default function TemporaryDrawer({ open, toggleDrawer }) {
+export default function TemporaryDrawer({
+  open,
+  toggleDrawer,
+  uploadedFiles,
+  setUploadedFiles,
+  fileData,
+  setFileData,
+  setMessageData,
+  setOpenDrawer,
+  user,
+  quotas,
+  totalSize,
+}) {
   const list = [
     {
       name: "Accueil",
@@ -26,23 +41,18 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
     },
     { name: "Mon CloudFile", icon: <DriveFolderUploadIcon /> },
     { name: "Courbeille", icon: <DeleteIcon /> },
-    { name: "espace de stockage", icon: <CloudQueueIcon /> },
+    { name: "stockage", icon: <CloudQueueIcon /> },
   ];
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
+  const [openD, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
 
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
+    <Box
+      sx={{ width: "220px" }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+    >
+      <List sx={{ mt: "10px" }}>
         {list.map((element, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton>
@@ -56,22 +66,29 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
     </Box>
   );
 
+  const fun = () => toggleDrawer(false);
   return (
     <div>
-      <Drawer open={open} onClose={toggleDrawer(false)} sx={{ p: 5 }}>
-        <WbCloudyOutlinedIcon sx={{ width: "100px", height: "60px" }} />
-        <Button
-          component="label"
-          role={undefined}
-          variant="outlined"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-          sx={{ height: "50px", width: "120px", borderRadius: 3 }}
-        >
-          New
-          <VisuallyHiddenInput type="file" />
-        </Button>
+      <Drawer open={open} onClose={fun()} sx={{ p: 5 }}>
+        <WbCloudyOutlinedIcon
+          sx={{ width: "120px", height: "80px", m: "25px auto 0 auto" }}
+        />
+
+        <DropDrag
+          open={openD}
+          handleOpen={handleOpen}
+          setOpen={setOpen}
+          uploadedFiles={uploadedFiles}
+          setUploadedFiles={setUploadedFiles}
+          fileData={fileData}
+          setFileData={setFileData}
+          setMessageData={setMessageData}
+          toggleDrawer={toggleDrawer}
+          setOpenDrawer={setOpenDrawer}
+          user={user}
+        />
         {DrawerList}
+        <ProgessBar quotas={quotas} totalSize={totalSize} />
       </Drawer>
     </div>
   );

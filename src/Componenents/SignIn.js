@@ -1,13 +1,15 @@
 import * as React from "react";
 import { useState } from "react";
+import Model from "./model";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-
+import Divider from "@mui/material/Divider";
+import SvgColor from "./svgColor";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { Link as LinkMui } from "@mui/material";
+import { Container, Link as LinkMui } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -15,38 +17,18 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
+import Google from "../Assets/google.png";
+import Facebook from "../Assets/facebook.png";
+import Logo from "../Assets/Logo.svg";
+import SnackBar from "./SnackBar";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  updatePassword,
   signInWithPopup,
   GoogleAuthProvider,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { auth } from "../firebase";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link
-        color="inherit"
-        href="https://github.com/elkadirizouhra?tab=repositories"
-      >
-        Mygithub
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -60,6 +42,21 @@ export default function SignInSide() {
     console.log(user);
     if (user) {
       navigate("/Dashboard");
+    }
+  };
+
+  const doSignInWithFacebook = async () => {
+    const provider = new FacebookAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log(user);
+
+      if (user) {
+        navigate("/Dashboard");
+      }
+    } catch (e) {
+      console.log("erreur");
     }
   };
 
@@ -87,27 +84,39 @@ export default function SignInSide() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid
+        container
+        component="main"
+        sx={{ height: "100vh" }}
+        justifyContent="center"
+      >
         <CssBaseline />
-        <Grid
+        {/* <Grid
           item
           xs={false}
           sm={4}
           md={7}
           sx={{
             backgroundImage:
-              "url(https://source.unsplash.com/random?wallpapers)",
+              "url(https://www.edtechreview.in/images/Daily/Insight/cloud_file_storage_for_students.jpg)",
             backgroundRepeat: "no-repeat",
+
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
             backgroundColor: (t) =>
               t.palette.mode === "light"
                 ? t.palette.grey[50]
                 : t.palette.grey[900],
             backgroundSize: "cover",
             backgroundPosition: "center",
+            backgroundPosition: "center",
           }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
+        /> */}
+        <Grid item xs={12} sm={8} md={5}>
+          <Container
+            maxWidth="sm"
             sx={{
               my: 8,
               mx: 4,
@@ -166,9 +175,7 @@ export default function SignInSide() {
 
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
+                  <Model />
                 </Grid>
                 <Grid item>
                   <LinkMui component={Link} to="/SignUp" variant="body2">
@@ -176,6 +183,8 @@ export default function SignInSide() {
                   </LinkMui>
                 </Grid>
               </Grid>
+              <Divider sx={{ mt: 3 }}>or</Divider>
+
               <Grid
                 item
                 sx={{
@@ -185,19 +194,40 @@ export default function SignInSide() {
                   pt: "20px",
                 }}
               >
-                or sign up using
                 <Button
                   fullWidth
-                  variant="contained"
+                  disableElevation
+                  startIcon={<SvgColor src={Google} />}
+                  variant="outlined"
                   onClick={doSignInWithGoogle}
-                  sx={{ mt: 3, mb: 2 }}
+                  sx={{ mt: 2, mb: 1, height: 45 }}
                 >
                   google
                 </Button>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  fontSize: "16px",
+                }}
+              >
+                <Button
+                  fullWidth
+                  disableElevation
+                  startIcon={
+                    <SvgColor src={Facebook} sx={{ height: 16, width: 12 }} />
+                  }
+                  variant="contained"
+                  onClick={doSignInWithFacebook}
+                  sx={{ mt: 1, height: 45 }}
+                >
+                  Facebook
+                </Button>
+              </Grid>
             </Box>
-          </Box>
+          </Container>
         </Grid>
       </Grid>
     </ThemeProvider>

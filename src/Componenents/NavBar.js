@@ -5,19 +5,40 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
+import { Container, Divider } from "@mui/material";
 import Menu from "@mui/material/Menu";
+import { MenuList } from "@mui/material/";
+import { auth } from "../firebase";
+import { Paper } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import { Link } from "react-router-dom";
+import { makeStyles, createStyles } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Button } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+import { useNavigate } from "react-router";
+import { signOut } from "firebase/auth";
+export default function MenuAppBar({ toggleDrawer, user }) {
+  const navigate = useNavigate();
 
-export default function MenuAppBar({ toggleDrawer }) {
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        navigate("/");
+        console.log("Signed out successfully");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
   };
 
   const handleMenu = (event) => {
@@ -27,6 +48,8 @@ export default function MenuAppBar({ toggleDrawer }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  /////// profile user //////
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -43,9 +66,9 @@ export default function MenuAppBar({ toggleDrawer }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
+            Cloud File
           </Typography>
-          {auth && (
+          {
             <div>
               <IconButton
                 size="large"
@@ -59,24 +82,99 @@ export default function MenuAppBar({ toggleDrawer }) {
               </IconButton>
               <Menu
                 id="menu-appbar"
-                anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right",
                 }}
                 keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                disablePadding={true}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <Grid
+                  container
+                  spacing={0}
+                  sx={{ borderRadius: "20px", width: "250px" }}
+                >
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{
+                      backgroundColor: "rgb(162, 205, 255)",
+                      height: "100px",
+
+                      mt: -2,
+                    }}
+                  >
+                    <Link to ='/userProfile' component={Button }>
+                      <CreateOutlinedIcon
+                        sx={{ position: "relative", ml: "210px", mt: "70px" }}
+                      />
+                   </Link>
+                  </Grid>
+                  <Divider
+                    orientation="horizontal"
+                    flexItem
+                    style={{ width: "100%" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      style={{ textAlign: "center", position: "relative" }}
+                    >
+                      <Avatar
+                        alt="Profile"
+                        src={user.photoURL}
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          border: "2px solid white",
+                          backgroundColor: "transparent",
+                          position: "absolute",
+                          top: "-50px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          zIndex: "1",
+                        }}
+                      />
+                    </Grid>
+                  </Divider>
+
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ backgroundColor: "white", height: "200px" }}
+                  >
+                    <Container
+                      color="black"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 1,
+                        mt: "50px",
+                        position: "relative",
+                      }}
+                    >
+                      <Typography fontWeight="bold">
+                        {user.displayName}
+                      </Typography>
+                      <Typography>{user.email}</Typography>
+                      <Button
+                        gap="5px"
+                        position="absolute"
+                        top="100px"
+                        onClick={handleLogout}
+                      >
+                        <LogoutIcon />
+                        Log out
+                      </Button>
+                    </Container>
+                  </Grid>
+                </Grid>
               </Menu>
             </div>
-          )}
+          }
         </Toolbar>
       </AppBar>
     </Box>

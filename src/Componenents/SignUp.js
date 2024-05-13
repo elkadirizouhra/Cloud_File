@@ -1,6 +1,7 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import validator from "validator";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,8 +18,8 @@ import Container from "@mui/material/Container";
 import { useNavigate, Link } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-
+import { auth, storage } from "../firebase";
+import Messages from "./HandleMessage";
 function Copyright(props) {
   return (
     <Typography
@@ -40,10 +41,13 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 export default function SignUp() {
   const navigate = useNavigate();
+  const [messageData, setMessageData] = useState({
+    isSuccess: false,
+    isError: false,
+    message: "",
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
@@ -52,21 +56,46 @@ export default function SignUp() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-        navigate("/SignIn");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        // ..
+    try {
+      // Créer un nouvel utilisateur avec son adresse e-mail et son mot de passe
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      setMessageData({
+        isSuccess: true,
+        message: "Votre compte a été créé avec succès.", // Message de succès
       });
+
+      // Effacer le message après 3 secondes
+      setTimeout(() => {
+        setMessageData({
+          isSuccess: false,
+          message: "",
+          isError: false,
+        });
+      }, 3000);
+    } catch (error) {
+      console.error("Erreur lors de l'inscription :", error);
+      setMessageData({
+        isError: true,
+        message: "Votre adresse e-mail ou votre mot de passe est invalide.", // Message d'erreur
+      });
+
+      // Effacer le message d'erreur après 3 secondes
+      setTimeout(() => {
+        setMessageData({
+          isSuccess: false,
+          message: "",
+          isError: false,
+        });
+      }, 3000);
+    }
   };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -79,18 +108,18 @@ export default function SignUp() {
     }
   };
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get("email"),
-  //     password: data.get("password"),
-  //   });
-  // };
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Messages
+        messageData={messageData}
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "20px",
+          transform: "translateX(-50%)",
+        }}
+      />
       <Box
         sx={{
           marginTop: 8,
@@ -183,6 +212,7 @@ export default function SignUp() {
           </Grid>
         </Box>
       </Box>
+
       <Copyright sx={{ mt: 5 }} />
     </Container>
   );
