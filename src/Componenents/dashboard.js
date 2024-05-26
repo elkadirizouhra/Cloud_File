@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
-import Feed from "./Feed";
 import NavBar from "./NavBar";
-import { Button, CssBaseline } from "@mui/material";
+import {  CssBaseline } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import Table from "./TableDocs";
 import Message from "./HandleMessage";
+import LoadBar from "./LoadingCercle";
 const Dashboard = () => {
+  const [loading, setLoading] = React.useState(true);
+  const handleClickLoading = () => {
+    setLoading((prevLoading) => !prevLoading);
+  };
   const [messageData, setMessageData] = useState({
     isSuccess: false,
     isError: false,
@@ -40,7 +44,6 @@ const Dashboard = () => {
   return (
     <>
       <CssBaseline />
-
       <Message
         messageData={messageData}
         style={{
@@ -71,7 +74,9 @@ const Dashboard = () => {
         setFileData={setFileData}
         setMessageData={setMessageData}
         user={user}
+        setLoading={setLoading}
       />
+      <LoadBar loading={loading} handleClickLoading={handleClickLoading} />
     </>
   );
 };

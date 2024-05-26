@@ -1,25 +1,14 @@
 import React from "react";
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Box } from "@mui/material";
-import {
-  Home,
-  Accueil,
-  Footer,
-  Navbar,
-  Contact,
-  About,
-  Work,
-} from "./Componenents/LindingPage";
+import { Accueil } from "./Componenents/LindingPage/indetx";
 import SignIn from "./Componenents/SignIn";
 import PricingTable from "./Componenents/LindingPage/Pricing-Table";
 import SignUp from "./Componenents/SignUp";
 import Dashboard from "./Componenents/dashboard";
-import Profile from './Componenents/updateProfile'
+import Profile from "./Componenents/updateProfile";
 const App = () => (
-  
   <BrowserRouter>
-  
-
     <Routes>
       <Route path="/" exact element={<Accueil />} />
       <Route path="/SignUp" element={<SignUp />} />

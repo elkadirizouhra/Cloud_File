@@ -1,15 +1,12 @@
 import * as React from "react";
 import { useState } from "react";
-import { styled } from "@mui/material/styles";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom"; // Assurez-vous d'importer Link
 import WbCloudyOutlinedIcon from "@mui/icons-material/WbCloudyOutlined";
 import HomeIcon from "@mui/icons-material/Home";
-import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -18,8 +15,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DropDrag from "./DropDrag";
 import ProgessBar from "./ProgressBar";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 
 export default function TemporaryDrawer({
   open,
@@ -38,12 +33,13 @@ export default function TemporaryDrawer({
     {
       name: "Accueil",
       icon: <HomeIcon />,
+      path: "/Dashboard",
     },
-    { name: "Mon CloudFile", icon: <DriveFolderUploadIcon /> },
-    { name: "Courbeille", icon: <DeleteIcon /> },
-    { name: "stockage", icon: <CloudQueueIcon /> },
+
+    { name: "Stockage", icon: <CloudQueueIcon />, path: "/Storage" },
   ];
-  const [openD, setOpen] = React.useState(false);
+
+  const [openD, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
 
   const DrawerList = (
@@ -54,12 +50,18 @@ export default function TemporaryDrawer({
     >
       <List sx={{ mt: "10px" }}>
         {list.map((element, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{element.icon}</ListItemIcon>
-              <ListItemText primary={element.name} />
-            </ListItemButton>
-          </ListItem>
+          <Link
+            to={element.path}
+            key={index}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>{element.icon}</ListItemIcon>
+                <ListItemText primary={element.name} />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         ))}
       </List>
       <Divider />
@@ -67,9 +69,10 @@ export default function TemporaryDrawer({
   );
 
   const fun = () => toggleDrawer(false);
+
   return (
     <div>
-      <Drawer open={open} onClose={fun()} sx={{ p: 5 }}>
+      <Drawer open={open} onClose={fun} sx={{ p: 5 }}>
         <WbCloudyOutlinedIcon
           sx={{ width: "120px", height: "80px", m: "25px auto 0 auto" }}
         />

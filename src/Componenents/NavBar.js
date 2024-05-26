@@ -7,19 +7,12 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MenuItem from "@mui/material/MenuItem";
+
 import { Container, Divider } from "@mui/material";
 import Menu from "@mui/material/Menu";
-import { MenuList } from "@mui/material/";
 import { auth } from "../firebase";
-import { Paper } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { Link } from "react-router-dom";
-import { makeStyles, createStyles } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
@@ -106,11 +99,11 @@ export default function MenuAppBar({ toggleDrawer, user }) {
                       mt: -2,
                     }}
                   >
-                    <Link to ='/userProfile' component={Button }>
+                    <Link to="/userProfile" component={Button}>
                       <CreateOutlinedIcon
                         sx={{ position: "relative", ml: "210px", mt: "70px" }}
                       />
-                   </Link>
+                    </Link>
                   </Grid>
                   <Divider
                     orientation="horizontal"

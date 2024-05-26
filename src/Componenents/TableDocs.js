@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import { Box } from "@mui/material/";
@@ -17,6 +17,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { storage } from "../firebase"; // Importer le service de stockage Firebase
 import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage"; // Importer les méthodes nécessaires depuis firebase/storage
 import MenueList from "./menueFile";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.red,
@@ -68,6 +69,8 @@ export default function CustomizedTables({
   setFileData,
   setMessageData,
   user,
+  setLoading,
+  folders
 }) {
   const downloadFile = async (fileName) => {
     try {
@@ -84,9 +87,7 @@ export default function CustomizedTables({
       // Gérer les erreurs
     }
   };
-
-  // Utilisez cette fonction où vous avez besoin de déclencher le téléchargement du fichier
-  // Par exemple, dans un gestionnaire d'événements de clic sur un bouton de téléchargement
+  
   const handleDownload = (fileName) => {
     downloadFile(fileName);
   };
@@ -111,7 +112,7 @@ export default function CustomizedTables({
 
         // Attendre que toutes les promesses soient résolues
         const fileData = await Promise.all(filePromises);
-
+     setLoading(false)
         // Mettre à jour l'état avec les données des fichiers
         setFileData(fileData);
         console.log("ghjk", fileData);
@@ -133,54 +134,61 @@ export default function CustomizedTables({
     }
   }
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ width: "1200px", position: "relative", left: "15%", top: "100px" }}
-    >
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow sx={{ Color: "black", fontWeight: "bolder" }}>
-            <StyledTableCell>Name</StyledTableCell>
-            <StyledTableCell>size</StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {fileData?.map((file) => (
-            <StyledTableRow
-              key={file}
-              sx={{
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.04)", // Couleur de fond au survol
-                  cursor: "pointer", // Curseur change au survol
-                },
-              }}
-            >
-              <StyledTableCell
-                align="rigth"
-                component="th"
-                scope="row"
-                onDoubleClick={() => handleDownload(file.name)}
+    <>
+     <TableContainer
+        component={Paper}
+        sx={{
+          width: "1200px",
+          position: "relative",
+          left: "15%",
+          top: "100px",
+        }}
+      >
+        <Table aria-label="customized table">
+          <TableHead>
+            <TableRow sx={{ Color: "black", fontWeight: "bolder" }}>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>size</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {fileData?.map((file) => (
+              <StyledTableRow
+                key={file}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.04)", // Couleur de fond au survol
+                    cursor: "pointer", // Curseur change au survol
+                  },
+                }}
               >
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  {getFileIcon(file.name)}
-                  {file.name}
-                </Box>
-              </StyledTableCell>
-              <StyledTableCell>{formatFileSize(file.size)}</StyledTableCell>
-              <StyledTableCell>
-                <MenueList
-                  file={file}
-                  fileData={fileData}
-                  setFileData={setFileData}
-                  user={user}
-                  setMessageData={setMessageData}
-                />
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                <StyledTableCell
+                  align="rigth"
+                  component="th"
+                  scope="row"
+                  onDoubleClick={() => handleDownload(file.name)}
+                >
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    {getFileIcon(file.name)}
+                    {file.name}
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell>{formatFileSize(file.size)}</StyledTableCell>
+                <StyledTableCell>
+                  <MenueList
+                    file={file}
+                    fileData={fileData}
+                    setFileData={setFileData}
+                    user={user}
+                    setMessageData={setMessageData}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

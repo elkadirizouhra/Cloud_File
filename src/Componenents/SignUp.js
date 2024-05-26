@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import validator from "validator";
 
 import Avatar from "@mui/material/Avatar";
@@ -11,14 +11,13 @@ import Checkbox from "@mui/material/Checkbox";
 import { Link as LinkMui } from "@mui/material/";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { Navigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useNavigate, Link } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, storage } from "../firebase";
+import { auth, } from "../firebase";
 import Messages from "./HandleMessage";
 function Copyright(props) {
   return (

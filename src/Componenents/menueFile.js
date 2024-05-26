@@ -1,7 +1,9 @@
 import * as React from "react";
+import copy from "copy-to-clipboard";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
-import { Container } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -10,19 +12,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { Link } from "@mui/material";
-import Messages from "./HandleMessage";
+
 import DialogActions from "@mui/material/DialogActions";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import AddLinkOutlinedIcon from "@mui/icons-material/AddLinkOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import {
-  getStorage,
-  ref,
-  deleteObject,
-  updateMetadata,
-  getDownloadURL,
-} from "firebase/storage";
+import { ref, deleteObject, getDownloadURL } from "firebase/storage";
 import { storage, auth } from "../firebase";
 
 export default function BasicMenu({
@@ -71,6 +66,23 @@ export default function BasicMenu({
     }
     handleClose();
   };
+  const copyToClipboard = () => {
+    copy(file.url);
+    setMessageData({
+      isSuccess: true,
+      message: "Lien copié dans le presse-papiers", // Message de succès
+    });
+
+    // Effacer le message après 3 secondes
+    setTimeout(() => {
+      setMessageData({
+        isSuccess: false,
+        message: "",
+        isError: false,
+      });
+    }, 3000);
+    handleClose();
+  };
   const saveBlobAsFile = (blob, fileName) => {
     const a = document.createElement("a");
     document.body.appendChild(a);
@@ -115,7 +127,6 @@ export default function BasicMenu({
 
   return (
     <div style={style}>
-      
       <Button
         id="basic-button"
         aria-controls={open ? "basic-menu" : undefined}
@@ -159,11 +170,24 @@ export default function BasicMenu({
           <DialogTitle id="alert-dialog-title">
             {"Voici le lien de votre fichier"}
           </DialogTitle>
-
           <DialogActions>
-            <Link href={file.url} target="_blank">
-              {file.url}
-            </Link>
+            <Box display="flex" alignItems="center">
+              <Link
+                href={file.url}
+                target="_blank"
+                className="custom-link"
+                style={{ marginRight: "8px", wordBreak: "break-all" }}
+              >
+                {file.url}
+              </Link>
+              <Button
+                onClick={copyToClipboard}
+                color="primary"
+                aria-label="copy to clipboard"
+              >
+                <ContentCopyIcon />
+              </Button>
+            </Box>
           </DialogActions>
         </Dialog>
       </React.Fragment>
