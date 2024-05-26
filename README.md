@@ -1,3 +1,7 @@
+# CloudFile Application
+
+You can access the deployed application here: [https://cloudfile-fe683.web.app/](https://cloudfile-fe683.web.app/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
